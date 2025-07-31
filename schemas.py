@@ -30,7 +30,6 @@ class Task:
     def to_dict(self) -> dict:
 
         return {
-            "id" : self.id,
             "description" : self.description,
             "status" : str(self.status),
             "created_at" : str(self.created_at),
