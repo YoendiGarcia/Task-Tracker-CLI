@@ -6,7 +6,7 @@ setup(
     description="A CLI application to manage tasks.",
     author="Yoendi",
     author_email="yoendigy1408@gmail.com",
-    # url="https://github.com/brkahmed/taskly",
+    url="https://github.com/YoendiGarcia/Task-Tracker-CLI",
     py_modules=["task-tracker"],
     entry_points={
         "console_scripts": [

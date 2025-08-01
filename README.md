@@ -46,7 +46,7 @@ Task Tracker offers a range of functionalities that enable users to manage their
 ### **Installation**: can be done via pip
 
 ```bash
-pip install git+https://github.com/
+pip install git+https://github.com/YoendiGarcia/Task-Tracker-CLI
 ```
 
 ### **Usage**: You can now run task-tracker from command line. Here are some example
