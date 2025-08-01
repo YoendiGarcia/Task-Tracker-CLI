@@ -1,23 +1,8 @@
-import json
 from schemas import Task,Status
-from main import DB_PATH
+from database import load_database,save_database
 
 
-class DBService:
-
-    def load_database(path: str) -> dict[int,dict]:
-
-        try:
-            with open(path) as f:
-                database = json.load(f)
-        except FileNotFoundError:
-            database = {}
-        return database
-
-
-    def save_database(database: dict[int, dict], path: str) -> None:
-        with open(path, "w") as f:
-            json.dump(database, f)
+DB_PATH = "./tasks.json"
 
 
 class TaskService:
@@ -28,67 +13,67 @@ class TaskService:
 
        task_dict = task.to_dict()
 
-       tasks = DBService.load_database(DB_PATH)
+       tasks = load_database(DB_PATH)
 
        tasks[task.id] = task_dict
 
-       DBService.save_database(tasks,DB_PATH)
+       save_database(tasks,DB_PATH)
 
-       return task_dict
 
     def update_task(id: int, description: str):
        
-       tasks = DBService.load_database(DB_PATH)
-
-       if tasks[id]:
+        tasks = load_database(DB_PATH)
 
         tasks[id]["description"] = description
 
-        DBService.save_database(tasks,DB_PATH)
+        save_database(tasks,DB_PATH)
 
-        return tasks[id]
-       
-       raise Exception("Task not exists")
 
     def change_status(id: int, new_status: Status):
 
-        tasks = DBService.load_database(DB_PATH)
+        tasks = load_database(DB_PATH)
 
-        if tasks[id]:
+        tasks[id]["status"] = new_status.value
 
-         tasks[id]["status"] = str(new_status)
+        save_database(tasks,DB_PATH)
 
-         DBService.save_database(tasks,DB_PATH)
-
-         return tasks[id]
+        
+    def mark_as_in_progress(id: int):
        
-        raise Exception("Task not exists")
+       TaskService.change_status(id,Status.IN_PROGRESS)
     
-    def list_tasks(which: Status = None):
+    def mark_as_done(id: int):
        
-       tasks = DBService.load_database(DB_PATH)
+       TaskService.change_status(id,Status.DONE)
+       
+    
+    def list_tasks(status: Status = "all"):
+       
+        tasks = load_database(DB_PATH)
 
-       if which:
+        if status != "all":
           
-          tasks_filter = [task for task in tasks if task['status'] == str(which)]
-          
-          return tasks_filter
+            tasks = dict([(key,value) for key,value in tasks.items() if value['status'] == status])
        
-       return tasks
+        for key in tasks.keys():
+          
+            print(f"ID: {key}")
+            print(f"Description: {tasks[key]["description"]}")
+            print(f"Status: {tasks[key]["status"]}")
+            print(f"Created at: {tasks[key]["created_at"]}")
+            print(f"Updated at: {tasks[key]["updated_at"]}")
+            print("-----------------------------------------")
+       
 
     def delete_task(id: int):
        
-        tasks = DBService.load_database(DB_PATH)
+        tasks = load_database(DB_PATH)
 
-        if tasks[id]:
+        del tasks[id]
 
-            del tasks[id]
+        save_database(tasks,DB_PATH)
 
-            DBService.save_database(tasks,DB_PATH)
-
-            return tasks[id]
        
-        raise Exception("Task not exists")
 
 
 

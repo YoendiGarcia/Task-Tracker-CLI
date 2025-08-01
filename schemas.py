@@ -1,8 +1,9 @@
 from enum import Enum
 from datetime import datetime
-from services import DBService
-from main import DB_PATH
+from database import load_database
 
+
+DB_PATH = "./tasks.json"
 
 class Status(Enum):
 
@@ -23,7 +24,7 @@ class Task:
 
     def get_id(self) -> int:
 
-        tasks = DBService.load_database(DB_PATH)
+        tasks = load_database(DB_PATH)
 
         return len(tasks)
     
@@ -31,7 +32,7 @@ class Task:
 
         return {
             "description" : self.description,
-            "status" : str(self.status),
+            "status" : self.status.value,
             "created_at" : str(self.created_at),
             "updated_at" : str(self.updated_at)
         }
